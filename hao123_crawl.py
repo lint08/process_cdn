@@ -24,17 +24,19 @@ def gen_url(filename):
 
 def urlopen_wrapper(url,i):
     retry = 0
-    while retry < 5:
+    while retry < 3:
         try:
-            r = urllib2.urlopen(url)
+            r = urllib2.urlopen(url,timeout=5)
             if r.getcode() == 200:
+                with open(config.path+str(i)+'.html','w') as f:
+                    f.write(r.read())
                 print "get"+":"+str(i)
                 break
-            else: retry += 1
-        except:
-            retry += 1
+            else: retry += 1;print 'error'
+        except :
+            print 'error'
 
-def crawl_process(filename,spawn_num = 300):
+def crawl_process(filename,spawn_num = 5):
     threads = []
     num = 0
     for i,url in enumerate(gen_url(filename)):
